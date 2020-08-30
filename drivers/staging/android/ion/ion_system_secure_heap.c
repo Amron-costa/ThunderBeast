@@ -66,7 +66,7 @@ int ion_system_secure_heap_unassign_sg(struct sg_table *sgt, int source_vmid)
 	ret = hyp_assign_table(sgt, &source_vmid, 1,
 			       &dest_vmid, &dest_perms, 1);
 	if (ret) {
-		pr_err("%s: Not freeing memory since assign call failed. VMID %d\n",
+		pr_debug("%s: Not freeing memory since assign call failed. VMID %d\n",
 		       __func__, source_vmid);
 		return -ENXIO;
 	}
@@ -86,7 +86,7 @@ int ion_system_secure_heap_assign_sg(struct sg_table *sgt, int dest_vmid)
 	ret = hyp_assign_table(sgt, &source_vmid, 1,
 			       &dest_vmid, &dest_perms, 1);
 	if (ret) {
-		pr_err("%s: Assign call failed. VMID %d\n",
+		pr_debug("%s: Assign call failed. VMID %d\n",
 		       __func__, dest_vmid);
 		return -EINVAL;
 	}
@@ -118,7 +118,7 @@ static int ion_system_secure_heap_allocate(struct ion_heap *heap,
 
 	if (!ion_heap_is_system_secure_heap_type(secure_heap->heap.type) ||
 	    !(is_cp_flag_present(flags) || (flags & ION_FLAG_SECURE))) {
-		pr_info("%s: Incorrect heap type or incorrect flags\n",
+		pr_debug("%s: Incorrect heap type or incorrect flags\n",
 								__func__);
 		return -EINVAL;
 	}
@@ -126,7 +126,7 @@ static int ion_system_secure_heap_allocate(struct ion_heap *heap,
 	ret = secure_heap->sys_heap->ops->allocate(secure_heap->sys_heap,
 						buffer, size, align, flags);
 	if (ret) {
-		pr_info("%s: Failed to get allocation for %s, ret = %d\n",
+		pr_debug("%s: Failed to get allocation for %s, ret = %d\n",
 			__func__, heap->name, ret);
 		return ret;
 	}
@@ -343,7 +343,7 @@ static void ion_system_secure_heap_unmap_dma(struct ion_heap *heap,
 static void *ion_system_secure_heap_map_kernel(struct ion_heap *heap,
 					struct ion_buffer *buffer)
 {
-	pr_info("%s: Kernel mapping from secure heap %s disallowed\n",
+	pr_debug("%s: Kernel mapping from secure heap %s disallowed\n",
 		__func__, heap->name);
 	return ERR_PTR(-EINVAL);
 }
@@ -357,7 +357,7 @@ static int ion_system_secure_heap_map_user(struct ion_heap *mapper,
 					struct ion_buffer *buffer,
 					struct vm_area_struct *vma)
 {
-	pr_info("%s: Mapping from secure heap %s disallowed\n",
+	pr_debug("%s: Mapping from secure heap %s disallowed\n",
 		__func__, mapper->name);
 	return -EINVAL;
 }

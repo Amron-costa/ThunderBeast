@@ -59,7 +59,7 @@
 #define LMH_CHECK_SCM_CMD(_cmd) \
 	do { \
 		if (!scm_is_call_available(SCM_SVC_LMH, _cmd)) { \
-			pr_err("SCM cmd:%d not available\n", _cmd); \
+			pr_debug("SCM cmd:%d not available\n", _cmd); \
 			return -ENODEV; \
 		} \
 	} while (0)
@@ -87,12 +87,12 @@
 				sizeof(uint32_t) * LMH_SCM_PAYLOAD_SIZE);\
 		trace_lmh_event_call("GET_TYPE exit");			\
 		if (ret) {						\
-			pr_err("Error in SCM v%d get type. cmd:%x err:%d\n", \
+			pr_debug("Error in SCM v%d get type. cmd:%x err:%d\n", \
 				(is_scm_armv8()) ? 8 : 7, cmd_id, ret);	\
 			break;						\
 		}							\
 		if (!size) {						\
-			pr_err("No LMH device supported.\n");		\
+			pr_debug("No LMH device supported.\n");		\
 			ret = -ENODEV;					\
 			break;						\
 		}							\
@@ -233,7 +233,7 @@ static int lmh_ctrl_qpmda(uint32_t enable)
 			LMH_CTRL_QPMDA), &desc_arg);
 	trace_lmh_event_call("CTRL_QPMDA exit");
 	if (ret) {
-		pr_err("Error in SCM v%d %s QPMDA call. err:%d\n",
+		pr_debug("Error in SCM v%d %s QPMDA call. err:%d\n",
 			(is_scm_armv8()) ? 8 : 7, (enable) ? "enable" :
 			"disable", ret);
 		goto ctrl_exit;
@@ -337,7 +337,7 @@ static void lmh_read_and_update(struct lmh_driver_data *lmh_dat)
 	dmac_inv_range(&payload, (void *)&payload +
 			sizeof(struct lmh_sensor_packet));
 	if (ret) {
-		pr_err("Error in SCM v%d read call. err:%d\n",
+		pr_debug("Error in SCM v%d read call. err:%d\n",
 				(is_scm_armv8()) ? 8 : 7, ret);
 		goto read_exit;
 	}
@@ -402,7 +402,7 @@ static void lmh_trim_error(void)
 	int ret = 0;
 
 	WARN_ON(1);
-	pr_err("LMH hardware trim error\n");
+	pr_debug("LMH hardware trim error\n");
 	desc_arg.arginfo = SCM_ARGS(0);
 	trace_lmh_event_call("TRIM_ERROR enter");
 	if (!is_scm_armv8())
@@ -412,7 +412,7 @@ static void lmh_trim_error(void)
 			LMH_TRIM_ERROR), &desc_arg);
 	trace_lmh_event_call("TRIM_ERROR exit");
 	if (ret)
-		pr_err("Error in SCM v%d trim error call. err:%d\n",
+		pr_debug("Error in SCM v%d trim error call. err:%d\n",
 					(is_scm_armv8()) ? 8 : 7, ret);
 
 	return;
@@ -428,7 +428,7 @@ static irqreturn_t lmh_isr_thread(int irq, void *data)
 	disable_irq_nosync(irq);
 	down_write(&lmh_sensor_access);
 	if (lmh_dat->intr_state != LMH_ISR_MONITOR) {
-		pr_err("Invalid software state\n");
+		pr_debug("Invalid software state\n");
 		trace_lmh_event_call("Invalid software state");
 		WARN_ON(1);
 		goto isr_unlock_exit;
@@ -480,14 +480,14 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 			lmh_data->trim_err_disable = true;
 			ret = 0;
 		} else {
-			pr_err("Error reading:%s. err:%d\n", key, ret);
+			pr_debug("Error reading:%s. err:%d\n", key, ret);
 			goto dev_exit;
 		}
 	}
 
 	lmh_data->regulator = devm_regulator_get(lmh_data->dev, "vdd-apss");
 	if (IS_ERR(lmh_data->regulator)) {
-		pr_err("unable to get vdd-apss regulator. err:%ld\n",
+		pr_debug("unable to get vdd-apss regulator. err:%ld\n",
 			PTR_ERR(lmh_data->regulator));
 		lmh_data->regulator = NULL;
 	} else {
@@ -495,7 +495,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 		ret = of_property_read_u32(node, key,
 			&lmh_data->odcm_thresh_mV);
 		if (ret) {
-			pr_err("Error getting ODCM thresh. err:%d\n", ret);
+			pr_debug("Error getting ODCM thresh. err:%d\n", ret);
 			ret = 0;
 		} else {
 			lmh_data->odcm_enabled = true;
@@ -504,7 +504,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 					devm_ioremap(&pdev->dev,
 					lmh_hw_data->odcm_reg_addr[idx], 4);
 				if (!lmh_data->odcm_reg[idx]) {
-					pr_err("Err mapping ODCM memory 0x%x\n",
+					pr_debug("Err mapping ODCM memory 0x%x\n",
 					lmh_hw_data->odcm_reg_addr[idx]);
 					lmh_data->odcm_enabled = false;
 					lmh_data->odcm_reg[0] = NULL;
@@ -517,7 +517,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 	lmh_data->irq_num = platform_get_irq(pdev, 0);
 	if (lmh_data->irq_num < 0) {
 		ret = lmh_data->irq_num;
-		pr_err("Error getting IRQ number. err:%d\n", ret);
+		pr_debug("Error getting IRQ number. err:%d\n", ret);
 		goto dev_exit;
 	}
 
@@ -525,7 +525,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 		lmh_isr_thread, IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
 		LMH_INTERRUPT, lmh_data);
 	if (ret) {
-		pr_err("Error getting irq for LMH. err:%d\n", ret);
+		pr_debug("Error getting irq for LMH. err:%d\n", ret);
 		goto dev_exit;
 	}
 
@@ -533,7 +533,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 		lmh_intr_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 		if (!lmh_intr_base) {
 			ret = -EINVAL;
-			pr_err("Error getting reg MEM for LMH.\n");
+			pr_debug("Error getting reg MEM for LMH.\n");
 			goto dev_exit;
 		}
 		lmh_data->intr_addr =
@@ -541,7 +541,7 @@ static int lmh_get_sensor_devicetree(struct platform_device *pdev)
 			resource_size(lmh_intr_base));
 		if (!lmh_data->intr_addr) {
 			ret = -ENODEV;
-			pr_err("Error Mapping LMH memory address\n");
+			pr_debug("Error Mapping LMH memory address\n");
 			goto dev_exit;
 		}
 	}
@@ -603,7 +603,7 @@ static int lmh_parse_sensor(struct lmh_sensor_info *sens_info)
 	lmh_sensor = devm_kzalloc(lmh_data->dev, sizeof(struct lmh_sensor_data),
 			GFP_KERNEL);
 	if (!lmh_sensor) {
-		pr_err("No payload\n");
+		pr_debug("No payload\n");
 		return -ENOMEM;
 	}
 	size = sizeof(sens_info->name);
@@ -621,7 +621,7 @@ static int lmh_parse_sensor(struct lmh_sensor_info *sens_info)
 	while (size--)
 		lmh_sensor->sensor_name[idx++] = ((sens_info->node_id
 				       & (0xFF << (size * 8))) >> (size * 8));
-	pr_info("Registering sensor:[%s]\n", lmh_sensor->sensor_name);
+	pr_debug("Registering sensor:[%s]\n", lmh_sensor->sensor_name);
 	lmh_sensor->ops.read = lmh_read;
 	lmh_sensor->ops.disable_hw_log = lmh_disable_log;
 	lmh_sensor->ops.enable_hw_log = lmh_enable_log;
@@ -630,7 +630,7 @@ static int lmh_parse_sensor(struct lmh_sensor_info *sens_info)
 	lmh_sensor->sensor_hw_node_id = sens_info->node_id;
 	ret = lmh_sensor_register(lmh_sensor->sensor_name, &lmh_sensor->ops);
 	if (ret) {
-		pr_err("Sensor:[%s] registration failed. err:%d\n",
+		pr_debug("Sensor:[%s] registration failed. err:%d\n",
 			lmh_sensor->sensor_name, ret);
 		goto sens_exit;
 	}
@@ -683,13 +683,13 @@ static int lmh_get_sensor_list(void)
 		trace_lmh_event_call("GET_SENSORS exit");
 		dmac_inv_range(payload, (void *)payload + buf_size);
 		if (ret < 0) {
-			pr_err("Error in SCM v%d call. err:%d\n",
+			pr_debug("Error in SCM v%d call. err:%d\n",
 					(is_scm_armv8()) ? 8 : 7, ret);
 			goto get_exit;
 		}
 		size = payload->count;
 		if (!size) {
-			pr_err("No LMH sensor supported\n");
+			pr_debug("No LMH sensor supported\n");
 			ret = -ENODEV;
 			goto get_exit;
 		}
@@ -715,7 +715,7 @@ static int lmh_set_level(struct lmh_device_ops *ops, int level)
 	struct lmh_profile *lmh_dev;
 
 	if (level < 0 || !ops) {
-		pr_err("Invalid Input\n");
+		pr_debug("Invalid Input\n");
 		return -EINVAL;
 	}
 	lmh_dev = container_of(ops, struct lmh_profile, dev_ops);
@@ -725,7 +725,7 @@ static int lmh_set_level(struct lmh_device_ops *ops, int level)
 		break;
 	}
 	if (idx == lmh_dev->level_ct) {
-		pr_err("Invalid profile:[%d]\n", level);
+		pr_debug("Invalid profile:[%d]\n", level);
 		return -EINVAL;
 	}
 	desc_arg.args[0] = level;
@@ -737,7 +737,7 @@ static int lmh_set_level(struct lmh_device_ops *ops, int level)
 		ret = scm_call2(SCM_SIP_FNID(SCM_SVC_LMH,
 			LMH_CHANGE_PROFILE), &desc_arg);
 	if (ret) {
-		pr_err("Error in SCM v%d switching profile:[%d]. err:%d\n",
+		pr_debug("Error in SCM v%d switching profile:[%d]. err:%d\n",
 			(is_scm_armv8()) ? 8 : 7, level, ret);
 		return ret;
 	}
@@ -753,7 +753,7 @@ static int lmh_get_all_level(struct lmh_device_ops *ops, int *level)
 	struct lmh_profile *lmh_dev;
 
 	if (!ops) {
-		pr_err("Invalid input\n");
+		pr_debug("Invalid input\n");
 		return -EINVAL;
 	}
 	lmh_dev = container_of(ops, struct lmh_profile, dev_ops);
@@ -770,7 +770,7 @@ static int lmh_get_level(struct lmh_device_ops *ops, int *level)
 	struct lmh_profile *lmh_dev;
 
 	if (!level || !ops) {
-		pr_err("Invalid input\n");
+		pr_debug("Invalid input\n");
 		return -EINVAL;
 	}
 	lmh_dev = container_of(ops, struct lmh_profile, dev_ops);
@@ -795,7 +795,7 @@ static int lmh_get_dev_info(void)
 	payload = devm_kzalloc(lmh_data->dev, sizeof(uint32_t) *
 		LMH_GET_PROFILE_SIZE, GFP_KERNEL);
 	if (!payload) {
-		pr_err("No payload\n");
+		pr_debug("No payload\n");
 		ret = -ENOMEM;
 		goto get_dev_exit;
 	}
@@ -815,7 +815,7 @@ static int lmh_get_dev_info(void)
 	ret = lmh_set_level(&lmh_data->dev_info.dev_ops,
 		lmh_hw_data->default_profile);
 	if (ret) {
-		pr_err("Error switching to default profile%d, err:%d\n",
+		pr_debug("Error switching to default profile%d, err:%d\n",
 			lmh_data->dev_info.curr_level, ret);
 		goto get_dev_exit;
 	}
@@ -843,7 +843,7 @@ static int lmh_device_init(void)
 	lmh_data->dev_info.dev_ops.set_level = lmh_set_level;
 	ret = lmh_device_register(LMH_DEVICE, &lmh_data->dev_info.dev_ops);
 	if (ret) {
-		pr_err("Error registering device:[%s]. err:%d", LMH_DEVICE,
+		pr_debug("Error registering device:[%s]. err:%d", LMH_DEVICE,
 			ret);
 		goto dev_init_exit;
 	}
@@ -875,12 +875,12 @@ static int lmh_debug_read(struct lmh_debug_ops *ops, uint32_t **buf)
 	}
 	trace_lmh_event_call("GET_DEBUG_READ_SIZE exit");
 	if (ret) {
-		pr_err("Error in SCM v%d get debug buffer size call. err:%d\n",
+		pr_debug("Error in SCM v%d get debug buffer size call. err:%d\n",
 				(is_scm_armv8()) ? 8 : 7, ret);
 		goto get_dbg_exit;
 	}
 	if (!size) {
-		pr_err("No Debug data to read.\n");
+		pr_debug("No Debug data to read.\n");
 		ret = -ENODEV;
 		goto get_dbg_exit;
 	}
@@ -891,7 +891,7 @@ static int lmh_debug_read(struct lmh_debug_ops *ops, uint32_t **buf)
 		payload = devm_kzalloc(lmh_data->dev, PAGE_ALIGN(size),
 				       GFP_KERNEL);
 		if (!payload) {
-			pr_err("payload buffer alloc failed\n");
+			pr_debug("payload buffer alloc failed\n");
 			ret = -ENOMEM;
 			goto get_dbg_exit;
 		}
@@ -919,12 +919,12 @@ static int lmh_debug_read(struct lmh_debug_ops *ops, uint32_t **buf)
 	dmac_inv_range(payload, (void *)payload + curr_size);
 	trace_lmh_event_call("GET_DEBUG_READ exit");
 	if (ret) {
-		pr_err("Error in SCM v%d get debug read. err:%d\n",
+		pr_debug("Error in SCM v%d get debug read. err:%d\n",
 				(is_scm_armv8()) ? 8 : 7, ret);
 		goto get_dbg_exit;
 	}
 	if (tz_ret) {
-		pr_err("TZ API returned error. err:%d\n", tz_ret);
+		pr_debug("TZ API returned error. err:%d\n", tz_ret);
 		ret = tz_ret;
 		goto get_dbg_exit;
 	}
@@ -986,7 +986,7 @@ static int lmh_debug_config_write(uint32_t cmd_id, uint32_t *buf, int size)
 	dmac_inv_range(payload, (void *)payload + size_bytes);
 	trace_lmh_event_call("CONFIG_DEBUG_WRITE exit");
 	if (ret) {
-		pr_err("Error in SCM v%d config debug read. err:%d\n",
+		pr_debug("Error in SCM v%d config debug read. err:%d\n",
 				(is_scm_armv8()) ? 8 : 7, ret);
 		goto set_cfg_exit;
 	}
@@ -1205,7 +1205,7 @@ static void lmh_dpm_init(void)
 			(phys_addr_t)APCS_DPM_VOLTAGE_SCALE, 4);
 	if (!lmh_data->dpm_voltage_scale_reg) {
 		ret = -ENODEV;
-		pr_err("Error mapping LMH DPM voltage scale register\n");
+		pr_debug("Error mapping LMH DPM voltage scale register\n");
 		goto dpm_init_exit;
 	}
 
@@ -1213,7 +1213,7 @@ static void lmh_dpm_init(void)
 	ret = regulator_register_notifier(lmh_data->regulator,
 		&(lmh_data->dpm_notifier_blk));
 	if (ret) {
-		pr_err("DPM regulator notification registration failed. err:%d\n",
+		pr_debug("DPM regulator notification registration failed. err:%d\n",
 			ret);
 		goto dpm_init_exit;
 	}
@@ -1248,7 +1248,7 @@ static int lmh_debug_init(void)
 		= lmh_debug_get_types;
 	ret = lmh_debug_register(&lmh_data->debug_info.debug_ops);
 	if (ret) {
-		pr_err("Error registering debug ops. err:%d\n", ret);
+		pr_debug("Error registering debug ops. err:%d\n", ret);
 		goto debug_init_exit;
 	}
 
@@ -1271,7 +1271,7 @@ static int lmh_sensor_init(struct platform_device *pdev)
 
 	ret = lmh_get_sensor_devicetree(pdev);
 	if (ret) {
-		pr_err("Error getting device tree data. err:%d\n", ret);
+		pr_debug("Error getting device tree data. err:%d\n", ret);
 		goto init_exit;
 	}
 	pr_debug("LMH Sensor Init complete\n");
@@ -1289,20 +1289,20 @@ static int lmh_probe(struct platform_device *pdev)
 	int ret = 0;
 
 	if (lmh_data) {
-		pr_err("Reinitializing lmh hardware driver\n");
+		pr_debug("Reinitializing lmh hardware driver\n");
 		return -EEXIST;
 	}
 	lmh_data = devm_kzalloc(&pdev->dev, sizeof(struct lmh_driver_data),
 					GFP_KERNEL);
 	if (!lmh_data) {
-		pr_err("kzalloc failed\n");
+		pr_debug("kzalloc failed\n");
 		return -ENOMEM;
 	}
 	lmh_data->dev = &pdev->dev;
 
 	lmh_data->poll_wq = alloc_workqueue("lmh_poll_wq", WQ_UNBOUND, 1);
 	if (!lmh_data->poll_wq) {
-		pr_err("Error allocating workqueue\n");
+		pr_debug("Error allocating workqueue\n");
 		ret = -ENOMEM;
 		goto probe_exit;
 	}
@@ -1310,12 +1310,12 @@ static int lmh_probe(struct platform_device *pdev)
 
 	ret = lmh_sensor_init(pdev);
 	if (ret) {
-		pr_err("Sensor Init failed. err:%d\n", ret);
+		pr_debug("Sensor Init failed. err:%d\n", ret);
 		goto probe_exit;
 	}
 	ret = lmh_device_init();
 	if (ret) {
-		pr_err("WARNING: Device Init failed. err:%d. LMH continues\n",
+		pr_debug("WARNING: Device Init failed. err:%d. LMH continues\n",
 			ret);
 		ret = 0;
 	}
@@ -1325,7 +1325,7 @@ static int lmh_probe(struct platform_device *pdev)
 
 	ret = lmh_debug_init();
 	if (ret) {
-		pr_err("LMH debug init failed. err:%d\n", ret);
+		pr_debug("LMH debug init failed. err:%d\n", ret);
 		ret = 0;
 	}
 	platform_set_drvdata(pdev, lmh_data);
@@ -1383,7 +1383,7 @@ int __init lmh_init_driver(void)
 		const struct of_device_id *match = of_match_node(lmh_match,
 							comp_node);
 		if (!match) {
-			pr_err("Couldnt find a match\n");
+			pr_debug("Couldnt find a match\n");
 			goto plt_register;
 		}
 		lmh_hw_data = (struct lmh_default_data *)match->data;
