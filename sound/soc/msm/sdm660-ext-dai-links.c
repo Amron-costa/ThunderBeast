@@ -175,7 +175,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 			slot_width = 32;
 			break;
 		default:
-			pr_err("%s: invalid param format 0x%x\n",
+			pr_debug("%s: invalid param format 0x%x\n",
 				__func__, params_format(params));
 			return -EINVAL;
 		}
@@ -184,13 +184,13 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 						    slot_width,
 						    slots);
 		if (!slot_mask) {
-			pr_err("%s: invalid slot_mask 0x%x\n",
+			pr_debug("%s: invalid slot_mask 0x%x\n",
 				__func__, slot_mask);
 			return -EINVAL;
 		}
 		break;
 	default:
-		pr_err("%s: invalid param channels %d\n",
+		pr_debug("%s: invalid param channels %d\n",
 			__func__, channels);
 		return -EINVAL;
 	}
@@ -207,7 +207,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		slot_offset = tdm_slot_offset[TDM_0];
 		break;
 	default:
-		pr_err("%s: dai id 0x%x not supported\n",
+		pr_debug("%s: dai id 0x%x not supported\n",
 			__func__, cpu_dai->id);
 		return -EINVAL;
 	}
@@ -220,13 +220,13 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 	}
 
 	if (offset_channels == 0) {
-		pr_err("%s: slot offset not supported, offset_channels %d\n",
+		pr_debug("%s: slot offset not supported, offset_channels %d\n",
 			__func__, offset_channels);
 		return -EINVAL;
 	}
 
 	if (channels > offset_channels) {
-		pr_err("%s: channels %d exceed offset_channels %d\n",
+		pr_debug("%s: channels %d exceed offset_channels %d\n",
 			__func__, channels, offset_channels);
 		return -EINVAL;
 	}
@@ -235,7 +235,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, slot_mask,
 					       slots, slot_width);
 		if (ret < 0) {
-			pr_err("%s: failed to set tdm slot, err:%d\n",
+			pr_debug("%s: failed to set tdm slot, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -243,7 +243,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
 						  channels, slot_offset);
 		if (ret < 0) {
-			pr_err("%s: failed to set channel map, err:%d\n",
+			pr_debug("%s: failed to set channel map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -251,7 +251,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, slot_mask, 0,
 					       slots, slot_width);
 		if (ret < 0) {
-			pr_err("%s: failed to set tdm slot, err:%d\n",
+			pr_debug("%s: failed to set tdm slot, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -259,7 +259,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai, channels,
 						  slot_offset, 0, NULL);
 		if (ret < 0) {
-			pr_err("%s: failed to set channel map, err:%d\n",
+			pr_debug("%s: failed to set channel map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}

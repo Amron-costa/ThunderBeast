@@ -241,7 +241,7 @@ static int int_mi2s_get_port_idx(struct snd_kcontrol *kcontrol)
 	else if (strnstr(kcontrol->id.name, "INT4_MI2S", sizeof("INT4_MI2S")))
 		port_id = INT4_MI2S;
 	else {
-		pr_err("%s: unsupported channel: %s",
+		pr_debug("%s: unsupported channel: %s",
 			__func__, kcontrol->id.name);
 		return -EINVAL;
 	}
@@ -467,14 +467,14 @@ static int msm_config_hph_compander_gpio(bool enable,
 	if (enable) {
 		ret = msm_cdc_pinctrl_select_active_state(pdata->comp_gpio_p);
 		if (ret) {
-			pr_err("%s: gpio set cannot be activated %s\n",
+			pr_debug("%s: gpio set cannot be activated %s\n",
 				__func__, "comp_gpio");
 			goto done;
 		}
 	} else {
 		ret = msm_cdc_pinctrl_select_sleep_state(pdata->comp_gpio_p);
 		if (ret) {
-			pr_err("%s: gpio set cannot be de-activated %s\n",
+			pr_debug("%s: gpio set cannot be de-activated %s\n",
 				__func__, "comp_gpio");
 			goto done;
 		}
@@ -499,7 +499,7 @@ static int is_ext_spk_gpio_support(struct platform_device *pdev,
 			"%s: missing %s in dt node\n", __func__, spk_ext_pa);
 	} else {
 		if (!gpio_is_valid(pdata->spk_ext_pa_gpio)) {
-			pr_err("%s: Invalid external speaker gpio: %d",
+			pr_debug("%s: Invalid external speaker gpio: %d",
 				__func__, pdata->spk_ext_pa_gpio);
 			return -EINVAL;
 		}
@@ -514,7 +514,7 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 	int ret;
 
 	if (!gpio_is_valid(pdata->spk_ext_pa_gpio)) {
-		pr_err("%s: Invalid gpio: %d\n", __func__,
+		pr_debug("%s: Invalid gpio: %d\n", __func__,
 			pdata->spk_ext_pa_gpio);
 		return false;
 	}
@@ -526,7 +526,7 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 		ret = msm_cdc_pinctrl_select_active_state(
 						pdata->ext_spk_gpio_p);
 		if (ret) {
-			pr_err("%s: gpio set cannot be de-activated %s\n",
+			pr_debug("%s: gpio set cannot be de-activated %s\n",
 					__func__, "ext_spk_gpio");
 			return ret;
 		}
@@ -536,7 +536,7 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 		ret = msm_cdc_pinctrl_select_sleep_state(
 						pdata->ext_spk_gpio_p);
 		if (ret) {
-			pr_err("%s: gpio set cannot be de-activated %s\n",
+			pr_debug("%s: gpio set cannot be de-activated %s\n",
 					__func__, "ext_spk_gpio");
 			return ret;
 		}
@@ -725,7 +725,7 @@ static int msm_int_enable_dig_cdc_clk(struct snd_soc_codec *codec,
 					AFE_PORT_ID_INT0_MI2S_RX,
 					&pdata->digital_cdc_core_clk);
 				if (ret < 0) {
-					pr_err("%s: failed to enable CCLK\n",
+					pr_debug("%s: failed to enable CCLK\n",
 							__func__);
 					mutex_unlock(
 						&pdata->cdc_int_mclk0_mutex);
@@ -748,7 +748,7 @@ static int msm_int_enable_dig_cdc_clk(struct snd_soc_codec *codec,
 				AFE_PORT_ID_INT0_MI2S_RX,
 				&pdata->digital_cdc_core_clk);
 			if (ret < 0)
-				pr_err("%s: failed to disable CCLK\n",
+				pr_debug("%s: failed to disable CCLK\n",
 						__func__);
 			atomic_set(&pdata->int_mclk0_enabled, false);
 			atomic_set(&pdata->int_mclk0_rsc_ref, 0);
@@ -780,7 +780,7 @@ static int loopback_mclk_put(struct snd_kcontrol *kcontrol,
 	case 1:
 		ret = msm_cdc_pinctrl_select_active_state(pdata->pdm_gpio_p);
 		if (ret) {
-			pr_err("%s: failed to enable the pri gpios: %d\n",
+			pr_debug("%s: failed to enable the pri gpios: %d\n",
 					__func__, ret);
 			break;
 		}
@@ -792,13 +792,13 @@ static int loopback_mclk_put(struct snd_kcontrol *kcontrol,
 				AFE_PORT_ID_INT0_MI2S_RX,
 				&pdata->digital_cdc_core_clk);
 			if (ret < 0) {
-				pr_err("%s: failed to enable the MCLK: %d\n",
+				pr_debug("%s: failed to enable the MCLK: %d\n",
 						__func__, ret);
 				mutex_unlock(&pdata->cdc_int_mclk0_mutex);
 				ret = msm_cdc_pinctrl_select_sleep_state(
 							pdata->pdm_gpio_p);
 				if (ret)
-					pr_err("%s: failed to disable the pri gpios: %d\n",
+					pr_debug("%s: failed to disable the pri gpios: %d\n",
 							__func__, ret);
 				break;
 			}
@@ -820,7 +820,7 @@ static int loopback_mclk_put(struct snd_kcontrol *kcontrol,
 				AFE_PORT_ID_INT0_MI2S_RX,
 				&pdata->digital_cdc_core_clk);
 			if (ret < 0) {
-				pr_err("%s: failed to disable the CCLK: %d\n",
+				pr_debug("%s: failed to disable the CCLK: %d\n",
 						__func__, ret);
 				mutex_unlock(&pdata->cdc_int_mclk0_mutex);
 				break;
@@ -830,11 +830,11 @@ static int loopback_mclk_put(struct snd_kcontrol *kcontrol,
 		mutex_unlock(&pdata->cdc_int_mclk0_mutex);
 		ret = msm_cdc_pinctrl_select_sleep_state(pdata->pdm_gpio_p);
 		if (ret)
-			pr_err("%s: failed to disable the pri gpios: %d\n",
+			pr_debug("%s: failed to disable the pri gpios: %d\n",
 					__func__, ret);
 		break;
 	default:
-		pr_err("%s: Unexpected input value\n", __func__);
+		pr_debug("%s: Unexpected input value\n", __func__);
 		break;
 	}
 	return ret;
@@ -1040,7 +1040,7 @@ static int msm_dmic_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_PRE_PMU:
 		ret = msm_cdc_pinctrl_select_active_state(pdata->dmic_gpio_p);
 		if (ret < 0) {
-			pr_err("%s: gpio set cannot be activated %sd",
+			pr_debug("%s: gpio set cannot be activated %sd",
 					__func__, "dmic_gpio");
 			return ret;
 		}
@@ -1048,13 +1048,13 @@ static int msm_dmic_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_POST_PMD:
 		ret = msm_cdc_pinctrl_select_sleep_state(pdata->dmic_gpio_p);
 		if (ret < 0) {
-			pr_err("%s: gpio set cannot be de-activated %sd",
+			pr_debug("%s: gpio set cannot be de-activated %sd",
 					__func__, "dmic_gpio");
 			return ret;
 		}
 		break;
 	default:
-		pr_err("%s: invalid DAPM event %d\n", __func__, event);
+		pr_debug("%s: invalid DAPM event %d\n", __func__, event);
 		return -EINVAL;
 	}
 	return 0;
@@ -1073,7 +1073,7 @@ static int msm_int_mclk0_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_PRE_PMU:
 		ret = msm_cdc_pinctrl_select_active_state(pdata->pdm_gpio_p);
 		if (ret < 0) {
-			pr_err("%s: gpio set cannot be activated %s\n",
+			pr_debug("%s: gpio set cannot be activated %s\n",
 			       __func__, "int_pdm");
 			return ret;
 		}
@@ -1085,7 +1085,7 @@ static int msm_int_mclk0_event(struct snd_soc_dapm_widget *w,
 			__func__, atomic_read(&pdata->int_mclk0_rsc_ref));
 		ret = msm_cdc_pinctrl_select_sleep_state(pdata->pdm_gpio_p);
 		if (ret < 0) {
-			pr_err("%s: gpio set cannot be de-activated %sd",
+			pr_debug("%s: gpio set cannot be de-activated %sd",
 					__func__, "int_pdm");
 			return ret;
 		}
@@ -1095,7 +1095,7 @@ static int msm_int_mclk0_event(struct snd_soc_dapm_widget *w,
 		msm_int_enable_dig_cdc_clk(codec, 0, true);
 		break;
 	default:
-		pr_err("%s: invalid DAPM event %d\n", __func__, event);
+		pr_debug("%s: invalid DAPM event %d\n", __func__, event);
 		return -EINVAL;
 	}
 	return 0;
@@ -1122,7 +1122,7 @@ static int int_mi2s_get_port_id(int be_id)
 		afe_port_id = AFE_PORT_ID_INT5_MI2S_TX;
 		break;
 	default:
-		pr_err("%s: Invalid be_id: %d\n", __func__, be_id);
+		pr_debug("%s: Invalid be_id: %d\n", __func__, be_id);
 		afe_port_id = -EINVAL;
 	}
 
@@ -1150,7 +1150,7 @@ static int int_mi2s_get_index(int port_id)
 		index = INT5_MI2S;
 		break;
 	default:
-		pr_err("%s: Invalid port_id: %d\n", __func__, port_id);
+		pr_debug("%s: Invalid port_id: %d\n", __func__, port_id);
 		index = -EINVAL;
 	}
 
@@ -1235,13 +1235,13 @@ static int msm_sdw_mi2s_snd_startup(struct snd_pcm_substream *substream)
 
 	ret = int_mi2s_set_sclk(substream, true);
 	if (ret < 0) {
-		pr_err("%s: failed to enable sclk %d\n",
+		pr_debug("%s: failed to enable sclk %d\n",
 				__func__, ret);
 		return ret;
 	}
 	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
 	if (ret < 0)
-		pr_err("%s: set fmt cpu dai failed; ret=%d\n", __func__, ret);
+		pr_debug("%s: set fmt cpu dai failed; ret=%d\n", __func__, ret);
 
 	return ret;
 }
@@ -1255,7 +1255,7 @@ static void msm_sdw_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 
 	ret = int_mi2s_set_sclk(substream, false);
 	if (ret < 0)
-		pr_err("%s:clock disable failed; ret=%d\n", __func__,
+		pr_debug("%s:clock disable failed; ret=%d\n", __func__,
 				ret);
 }
 
@@ -1273,13 +1273,13 @@ static int msm_int_mi2s_snd_startup(struct snd_pcm_substream *substream)
 
 	ret = int_mi2s_set_sclk(substream, true);
 	if (ret < 0) {
-		pr_err("%s: failed to enable sclk %d\n",
+		pr_debug("%s: failed to enable sclk %d\n",
 				__func__, ret);
 		return ret;
 	}
 	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
 	if (ret < 0)
-		pr_err("%s: set fmt cpu dai failed; ret=%d\n", __func__, ret);
+		pr_debug("%s: set fmt cpu dai failed; ret=%d\n", __func__, ret);
 
 	return ret;
 }
@@ -1293,7 +1293,7 @@ static void msm_int_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 
 	ret = int_mi2s_set_sclk(substream, false);
 	if (ret < 0)
-		pr_err("%s:clock disable failed; ret=%d\n", __func__,
+		pr_debug("%s:clock disable failed; ret=%d\n", __func__,
 				ret);
 }
 
@@ -1379,14 +1379,14 @@ static int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 	ret = snd_soc_add_codec_controls(ana_cdc, msm_snd_controls,
 				   ARRAY_SIZE(msm_snd_controls));
 	if (ret < 0) {
-		pr_err("%s: add_codec_controls failed: %d\n",
+		pr_debug("%s: add_codec_controls failed: %d\n",
 			__func__, ret);
 		return ret;
 	}
 	ret = snd_soc_add_codec_controls(ana_cdc, msm_common_snd_controls,
 				   msm_common_snd_controls_size());
 	if (ret < 0) {
-		pr_err("%s: add common snd controls failed: %d\n",
+		pr_debug("%s: add common snd controls failed: %d\n",
 			__func__, ret);
 		return ret;
 	}
@@ -1587,7 +1587,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 			slot_width = 32;
 			break;
 		default:
-			pr_err("%s: invalid param format 0x%x\n",
+			pr_debug("%s: invalid param format 0x%x\n",
 				__func__, params_format(params));
 			return -EINVAL;
 		}
@@ -1596,13 +1596,13 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 						    slot_width,
 						    slots);
 		if (!slot_mask) {
-			pr_err("%s: invalid slot_mask 0x%x\n",
+			pr_debug("%s: invalid slot_mask 0x%x\n",
 				__func__, slot_mask);
 			return -EINVAL;
 		}
 		break;
 	default:
-		pr_err("%s: invalid param channels %d\n",
+		pr_debug("%s: invalid param channels %d\n",
 			__func__, channels);
 		return -EINVAL;
 	}
@@ -1619,7 +1619,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		slot_offset = tdm_slot_offset[TDM_0];
 		break;
 	default:
-		pr_err("%s: dai id 0x%x not supported\n",
+		pr_debug("%s: dai id 0x%x not supported\n",
 			__func__, cpu_dai->id);
 		return -EINVAL;
 	}
@@ -1632,13 +1632,13 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 	}
 
 	if (offset_channels == 0) {
-		pr_err("%s: slot offset not supported, offset_channels %d\n",
+		pr_debug("%s: slot offset not supported, offset_channels %d\n",
 			__func__, offset_channels);
 		return -EINVAL;
 	}
 
 	if (channels > offset_channels) {
-		pr_err("%s: channels %d exceed offset_channels %d\n",
+		pr_debug("%s: channels %d exceed offset_channels %d\n",
 			__func__, channels, offset_channels);
 		return -EINVAL;
 	}
@@ -1647,7 +1647,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, slot_mask,
 					       slots, slot_width);
 		if (ret < 0) {
-			pr_err("%s: failed to set tdm slot, err:%d\n",
+			pr_debug("%s: failed to set tdm slot, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -1655,7 +1655,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
 						  channels, slot_offset);
 		if (ret < 0) {
-			pr_err("%s: failed to set channel map, err:%d\n",
+			pr_debug("%s: failed to set channel map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -1663,7 +1663,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, slot_mask, 0,
 					       slots, slot_width);
 		if (ret < 0) {
-			pr_err("%s: failed to set tdm slot, err:%d\n",
+			pr_debug("%s: failed to set tdm slot, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -1671,7 +1671,7 @@ static int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai, channels,
 						  slot_offset, 0, NULL);
 		if (ret < 0) {
-			pr_err("%s: failed to set channel map, err:%d\n",
+			pr_debug("%s: failed to set channel map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -3542,7 +3542,7 @@ static void msm_disable_int_mclk0(struct work_struct *work)
 			AFE_PORT_ID_INT0_MI2S_RX,
 			&pdata->digital_cdc_core_clk);
 		if (ret < 0)
-			pr_err("%s failed to disable the CCLK\n", __func__);
+			pr_debug("%s failed to disable the CCLK\n", __func__);
 		atomic_set(&pdata->int_mclk0_enabled, false);
 	}
 	mutex_unlock(&pdata->cdc_int_mclk0_mutex);

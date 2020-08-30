@@ -320,7 +320,7 @@ static int slim_get_port_idx(struct snd_kcontrol *kcontrol)
 	else if (strnstr(kcontrol->id.name, "SLIM_1_TX", sizeof("SLIM_1_TX")))
 		port_id = SLIM_TX_1;
 	else {
-		pr_err("%s: unsupported channel: %s",
+		pr_debug("%s: unsupported channel: %s",
 			__func__, kcontrol->id.name);
 		return -EINVAL;
 	}
@@ -535,7 +535,7 @@ static int slim_tx_sample_rate_put(struct snd_kcontrol *kcontrol,
 
 	sample_rate = slim_get_sample_rate(ucontrol->value.enumerated.item[0]);
 	if (sample_rate == SAMPLING_RATE_44P1KHZ) {
-		pr_err("%s: Unsupported sample rate %d: for Tx path\n",
+		pr_debug("%s: Unsupported sample rate %d: for Tx path\n",
 			__func__, sample_rate);
 		return -EINVAL;
 	}
@@ -977,7 +977,7 @@ int msm_ext_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 			rc = afe_set_config(AFE_SLIMBUS_SLAVE_PORT_CONFIG,
 					    config, SLIMBUS_5_TX);
 			if (rc)
-				pr_err("%s: Failed to set slimbus slave port config %d\n",
+				pr_debug("%s: Failed to set slimbus slave port config %d\n",
 					__func__, rc);
 		}
 		break;
@@ -1036,7 +1036,7 @@ int msm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_get_channel_map(codec_dai,
 					&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to get codec chan map, err:%d\n",
+			pr_debug("%s: failed to get codec chan map, err:%d\n",
 				__func__, ret);
 			goto err_ch_map;
 		}
@@ -1060,7 +1060,7 @@ int msm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, 0,
 						  rx_ch_count, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to set cpu chan map, err:%d\n",
+			pr_debug("%s: failed to set cpu chan map, err:%d\n",
 				__func__, ret);
 			goto err_ch_map;
 		}
@@ -1070,7 +1070,7 @@ int msm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_get_channel_map(codec_dai,
 					 &tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to get codec chan map\n, err:%d\n",
+			pr_debug("%s: failed to get codec chan map\n, err:%d\n",
 				__func__, ret);
 			goto err_ch_map;
 		}
@@ -1092,7 +1092,7 @@ int msm_snd_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_set_channel_map(cpu_dai,
 						  user_set_tx_ch, tx_ch, 0, 0);
 		if (ret < 0)
-			pr_err("%s: failed to set cpu chan map, err:%d\n",
+			pr_debug("%s: failed to set cpu chan map, err:%d\n",
 				__func__, ret);
 	}
 
@@ -1128,14 +1128,14 @@ int msm_ext_slimbus_2_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_get_channel_map(codec_dai,
 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to get codec chan map, err:%d\n",
+			pr_debug("%s: failed to get codec chan map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, 0,
 				num_rx_ch, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to set cpu chan map, err:%d\n",
+			pr_debug("%s: failed to set cpu chan map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -1146,14 +1146,14 @@ int msm_ext_slimbus_2_hw_params(struct snd_pcm_substream *substream,
 		ret = snd_soc_dai_get_channel_map(codec_dai,
 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
 		if (ret < 0) {
-			pr_err("%s: failed to get codec chan map, err:%d\n",
+			pr_debug("%s: failed to get codec chan map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
 		ret = snd_soc_dai_set_channel_map(cpu_dai,
 				num_tx_ch, tx_ch, 0, 0);
 		if (ret < 0) {
-			pr_err("%s: failed to set cpu chan map, err:%d\n",
+			pr_debug("%s: failed to set cpu chan map, err:%d\n",
 				__func__, ret);
 			goto end;
 		}
@@ -1183,7 +1183,7 @@ int msm_snd_cpe_hw_params(struct snd_pcm_substream *substream,
 	u32 tx_ch_cnt = 0;
 
 	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE) {
-		pr_err("%s: Invalid stream type %d\n",
+		pr_debug("%s: Invalid stream type %d\n",
 			__func__, substream->stream);
 		ret = -EINVAL;
 		goto end;
@@ -1194,7 +1194,7 @@ int msm_snd_cpe_hw_params(struct snd_pcm_substream *substream,
 	ret = snd_soc_dai_get_channel_map(codec_dai,
 				 &tx_ch_cnt, tx_ch, NULL, NULL);
 	if (ret < 0) {
-		pr_err("%s: failed to get codec chan map\n, err:%d\n",
+		pr_debug("%s: failed to get codec chan map\n, err:%d\n",
 			__func__, ret);
 		goto end;
 	}
@@ -1205,7 +1205,7 @@ int msm_snd_cpe_hw_params(struct snd_pcm_substream *substream,
 	ret = snd_soc_dai_set_channel_map(cpu_dai,
 					  tx_ch_cnt, tx_ch, 0, 0);
 	if (ret < 0) {
-		pr_err("%s: failed to set cpu chan map, err:%d\n",
+		pr_debug("%s: failed to set cpu chan map, err:%d\n",
 			__func__, ret);
 		goto end;
 	}
@@ -1231,7 +1231,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 	if (config_data) {
 		rc = afe_set_config(AFE_CDC_REGISTERS_CONFIG, config_data, 0);
 		if (rc) {
-			pr_err("%s: Failed to set codec registers config %d\n",
+			pr_debug("%s: Failed to set codec registers config %d\n",
 					__func__, rc);
 			return rc;
 		}
@@ -1243,7 +1243,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 		rc = afe_set_config(AFE_CDC_REGISTER_PAGE_CONFIG, config_data,
 				    0);
 		if (rc)
-			pr_err("%s: Failed to set cdc register page config\n",
+			pr_debug("%s: Failed to set cdc register page config\n",
 				__func__);
 	}
 
@@ -1252,7 +1252,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 	if (config_data) {
 		rc = afe_set_config(AFE_SLIMBUS_SLAVE_CONFIG, config_data, 0);
 		if (rc) {
-			pr_err("%s: Failed to set slimbus slave config %d\n",
+			pr_debug("%s: Failed to set slimbus slave config %d\n",
 					__func__, rc);
 			return rc;
 		}
@@ -1263,7 +1263,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 	if (config_data) {
 		rc = afe_set_config(AFE_AANC_VERSION, config_data, 0);
 		if (rc) {
-			pr_err("%s: Failed to set AANC version %d\n",
+			pr_debug("%s: Failed to set AANC version %d\n",
 					__func__, rc);
 			return rc;
 		}
@@ -1275,7 +1275,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 		rc = afe_set_config(AFE_CDC_CLIP_REGISTERS_CONFIG,
 					config_data, 0);
 		if (rc) {
-			pr_err("%s: Failed to set clip registers %d\n",
+			pr_debug("%s: Failed to set clip registers %d\n",
 				__func__, rc);
 			return rc;
 		}
@@ -1287,7 +1287,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 		rc = afe_set_config(AFE_CLIP_BANK_SEL,
 				config_data, 0);
 		if (rc) {
-			pr_err("%s: Failed to set AFE bank selection %d\n",
+			pr_debug("%s: Failed to set AFE bank selection %d\n",
 				__func__, rc);
 			return rc;
 		}
@@ -1299,7 +1299,7 @@ static int msm_afe_set_config(struct snd_soc_codec *codec)
 		rc = afe_set_config(AFE_CDC_REGISTER_PAGE_CONFIG, config_data,
 				0);
 		if (rc)
-			pr_err("%s: Failed to set cdc register page config\n",
+			pr_debug("%s: Failed to set cdc register page config\n",
 					__func__);
 	}
 
@@ -1361,7 +1361,7 @@ static int msm_adsp_power_up_config(struct snd_soc_codec *codec)
 	} while (time_after(timeout, jiffies));
 
 	if (!adsp_ready) {
-		pr_err("%s: timed out waiting for ADSP Audio\n", __func__);
+		pr_debug("%s: timed out waiting for ADSP Audio\n", __func__);
 		ret = -ETIMEDOUT;
 		goto err_fail;
 	}
@@ -1369,7 +1369,7 @@ static int msm_adsp_power_up_config(struct snd_soc_codec *codec)
 
 	ret = msm_afe_set_config(codec);
 	if (ret)
-		pr_err("%s: Failed to set AFE config. err %d\n",
+		pr_debug("%s: Failed to set AFE config. err %d\n",
 			__func__, ret);
 
 	return 0;
@@ -1518,7 +1518,7 @@ static int msm_ext_prepare_hifi(struct msm_asoc_mach_data *pdata)
 			pdata->hph_en1_gpio);
 		ret = gpio_request(pdata->hph_en1_gpio, "hph_en1_gpio");
 		if (ret) {
-			pr_err("%s: hph_en1_gpio request failed, ret:%d\n",
+			pr_debug("%s: hph_en1_gpio request failed, ret:%d\n",
 				__func__, ret);
 			goto err;
 		}
@@ -1528,7 +1528,7 @@ static int msm_ext_prepare_hifi(struct msm_asoc_mach_data *pdata)
 			pdata->hph_en0_gpio);
 		ret = gpio_request(pdata->hph_en0_gpio, "hph_en0_gpio");
 		if (ret)
-			pr_err("%s: hph_en0_gpio request failed, ret:%d\n",
+			pr_debug("%s: hph_en0_gpio request failed, ret:%d\n",
 				__func__, ret);
 	}
 
@@ -1632,7 +1632,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 	ret = snd_soc_add_codec_controls(codec, msm_snd_controls,
 					 ARRAY_SIZE(msm_snd_controls));
 	if (ret < 0) {
-		pr_err("%s: add_codec_controls failed: %d\n",
+		pr_debug("%s: add_codec_controls failed: %d\n",
 			__func__, ret);
 		return ret;
 	}
@@ -1640,7 +1640,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 	ret = snd_soc_add_codec_controls(codec, msm_common_snd_controls,
 					 msm_common_snd_controls_size());
 	if (ret < 0) {
-		pr_err("%s: add_common_snd_controls failed: %d\n",
+		pr_debug("%s: add_common_snd_controls failed: %d\n",
 			__func__, ret);
 		return ret;
 	}
@@ -1737,7 +1737,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 
 	ret = msm_adsp_power_up_config(codec);
 	if (ret) {
-		pr_err("%s: Failed to set AFE config %d\n", __func__, ret);
+		pr_debug("%s: Failed to set AFE config %d\n", __func__, ret);
 		goto err_afe_cfg;
 	}
 
@@ -1746,7 +1746,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 	if (config_data) {
 		ret = afe_set_config(AFE_AANC_VERSION, config_data, 0);
 		if (ret) {
-			pr_err("%s: Failed to set aanc version %d\n",
+			pr_debug("%s: Failed to set aanc version %d\n",
 				__func__, ret);
 			goto err_afe_cfg;
 		}
@@ -1759,7 +1759,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 			ret = afe_set_config(AFE_CDC_CLIP_REGISTERS_CONFIG,
 						 config_data, 0);
 			if (ret) {
-				pr_err("%s: Failed to set clip registers %d\n",
+				pr_debug("%s: Failed to set clip registers %d\n",
 					__func__, ret);
 				goto err_afe_cfg;
 			}
@@ -1769,7 +1769,7 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 		if (config_data) {
 			ret = afe_set_config(AFE_CLIP_BANK_SEL, config_data, 0);
 			if (ret) {
-				pr_err("%s: Failed to set AFE bank selection %d\n",
+				pr_debug("%s: Failed to set AFE bank selection %d\n",
 					__func__, ret);
 				goto err_afe_cfg;
 			}
@@ -1827,10 +1827,10 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 			pdata->codec = codec;
 			ret = tavil_mbhc_hs_detect(codec, wcd_mbhc_cfg_ptr);
 			if (ret < 0)
-				pr_err("%s: Failed to intialise mbhc %d\n",
+				pr_debug("%s: Failed to intialise mbhc %d\n",
 						__func__, ret);
 		} else {
-			pr_err("%s: wcd_mbhc_cfg calibration is NULL\n",
+			pr_debug("%s: wcd_mbhc_cfg calibration is NULL\n",
 					__func__);
 			ret = -ENOMEM;
 			goto err_mbhc_cal;
@@ -1840,10 +1840,10 @@ int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 			pdata->codec = codec;
 			ret = tasha_mbhc_hs_detect(codec, wcd_mbhc_cfg_ptr);
 			if (ret < 0)
-				pr_err("%s: Failed to intialise mbhc %d\n",
+				pr_debug("%s: Failed to intialise mbhc %d\n",
 						__func__, ret);
 		} else {
-			pr_err("%s: wcd_mbhc_cfg calibration is NULL\n",
+			pr_debug("%s: wcd_mbhc_cfg calibration is NULL\n",
 					__func__);
 			ret = -ENOMEM;
 			goto err_mbhc_cal;
@@ -1873,7 +1873,7 @@ void msm_ext_register_audio_notifier(struct platform_device *pdev)
 	ret = audio_notifier_register("sdm660", AUDIO_NOTIFIER_ADSP_DOMAIN,
 				      &service_nb);
 	if (ret < 0)
-		pr_err("%s: Audio notifier register failed ret = %d\n",
+		pr_debug("%s: Audio notifier register failed ret = %d\n",
 			__func__, ret);
 }
 EXPORT_SYMBOL(msm_ext_register_audio_notifier);

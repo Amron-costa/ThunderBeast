@@ -536,7 +536,7 @@ static int tdm_get_port_idx(struct snd_kcontrol *kcontrol,
 		    sizeof(kcontrol->id.name))) {
 			port->mode = TDM_QUAT;
 		} else {
-			pr_err("%s: unsupported mode in: %s",
+			pr_debug("%s: unsupported mode in: %s",
 				__func__, kcontrol->id.name);
 			return -EINVAL;
 		}
@@ -582,7 +582,7 @@ static int tdm_get_port_idx(struct snd_kcontrol *kcontrol,
 			   sizeof(kcontrol->id.name))) {
 			port->channel = TDM_7;
 		} else {
-			pr_err("%s: unsupported channel in: %s",
+			pr_debug("%s: unsupported channel in: %s",
 				__func__, kcontrol->id.name);
 			return -EINVAL;
 		}
@@ -598,7 +598,7 @@ static int tdm_rx_sample_rate_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		ucontrol->value.enumerated.item[0] = tdm_get_sample_rate_val(
@@ -618,7 +618,7 @@ static int tdm_rx_sample_rate_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_rx_cfg[port.mode][port.channel].sample_rate =
@@ -638,7 +638,7 @@ static int tdm_tx_sample_rate_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		ucontrol->value.enumerated.item[0] = tdm_get_sample_rate_val(
@@ -658,7 +658,7 @@ static int tdm_tx_sample_rate_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_tx_cfg[port.mode][port.channel].sample_rate =
@@ -768,7 +768,7 @@ static int tdm_rx_format_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		ucontrol->value.enumerated.item[0] = tdm_get_format_val(
@@ -788,7 +788,7 @@ static int tdm_rx_format_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_rx_cfg[port.mode][port.channel].bit_format =
@@ -808,7 +808,7 @@ static int tdm_tx_format_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		ucontrol->value.enumerated.item[0] = tdm_get_format_val(
@@ -828,7 +828,7 @@ static int tdm_tx_format_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_tx_cfg[port.mode][port.channel].bit_format =
@@ -848,7 +848,7 @@ static int tdm_rx_ch_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 
@@ -869,7 +869,7 @@ static int tdm_rx_ch_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_rx_cfg[port.mode][port.channel].channels =
@@ -889,7 +889,7 @@ static int tdm_tx_ch_get(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		ucontrol->value.enumerated.item[0] =
@@ -909,7 +909,7 @@ static int tdm_tx_ch_put(struct snd_kcontrol *kcontrol,
 	int ret = tdm_get_port_idx(kcontrol, &port);
 
 	if (ret) {
-		pr_err("%s: unsupported control: %s",
+		pr_debug("%s: unsupported control: %s",
 			__func__, kcontrol->id.name);
 	} else {
 		tdm_tx_cfg[port.mode][port.channel].channels =
@@ -971,7 +971,7 @@ static int aux_pcm_get_port_idx(struct snd_kcontrol *kcontrol)
 			 sizeof("QUAT_AUX_PCM")))
 		idx = QUAT_AUX_PCM;
 	else {
-		pr_err("%s: unsupported port: %s",
+		pr_debug("%s: unsupported port: %s",
 			__func__, kcontrol->id.name);
 		idx = -EINVAL;
 	}
@@ -1080,7 +1080,7 @@ static int mi2s_get_port_idx(struct snd_kcontrol *kcontrol)
 		 sizeof("QUAT_MI2S_TX")))
 		idx = QUAT_MI2S;
 	else {
-		pr_err("%s: unsupported channel: %s",
+		pr_debug("%s: unsupported channel: %s",
 			__func__, kcontrol->id.name);
 		idx = -EINVAL;
 	}
@@ -1688,7 +1688,7 @@ static int ext_disp_get_port_idx(struct snd_kcontrol *kcontrol)
 			 sizeof("Display Port RX")))
 		idx = DP_RX_IDX;
 	else {
-		pr_err("%s: unsupported BE: %s",
+		pr_debug("%s: unsupported BE: %s",
 			__func__, kcontrol->id.name);
 		idx = -EINVAL;
 	}
@@ -1855,14 +1855,14 @@ static int msm_qos_ctl_put(struct snd_kcontrol *kcontrol,
 
 	rtd = snd_soc_get_pcm_runtime(card, fe_name);
 	if (!rtd) {
-		pr_err("%s: fail to get pcm runtime for %s\n",
+		pr_debug("%s: fail to get pcm runtime for %s\n",
 			__func__, fe_name);
 		return -EINVAL;
 	}
 
 	substream = rtd->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
 	if (!substream) {
-		pr_err("%s: substream is null\n", __func__);
+		pr_debug("%s: substream is null\n", __func__);
 		return -EINVAL;
 	}
 
@@ -1871,7 +1871,7 @@ static int msm_qos_ctl_put(struct snd_kcontrol *kcontrol,
 		if (pm_qos_request_active(&substream->latency_pm_qos_req))
 			pm_qos_remove_request(&substream->latency_pm_qos_req);
 		if (!substream->runtime) {
-			pr_err("%s: runtime is null\n", __func__);
+			pr_debug("%s: runtime is null\n", __func__);
 			return -EINVAL;
 		}
 		usecs = MSM_LL_QOS_VALUE;
@@ -2120,7 +2120,7 @@ static int msm_ext_disp_get_idx_from_beid(int32_t be_id)
 		idx = DP_RX_IDX;
 		break;
 	default:
-		pr_err("%s: Incorrect ext_disp be_id %d\n", __func__, be_id);
+		pr_debug("%s: Incorrect ext_disp be_id %d\n", __func__, be_id);
 		idx = -EINVAL;
 		break;
 	}
@@ -2168,7 +2168,7 @@ int msm_common_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	case MSM_BACKEND_DAI_DISPLAY_PORT_RX:
 		idx = msm_ext_disp_get_idx_from_beid(dai_link->be_id);
 		if (IS_ERR_VALUE(idx)) {
-			pr_err("%s: Incorrect ext disp idx %d\n",
+			pr_debug("%s: Incorrect ext disp idx %d\n",
 			       __func__, idx);
 			rc = idx;
 			break;
@@ -2449,7 +2449,7 @@ static int msm_get_port_id(int be_id)
 		afe_port_id = AFE_PORT_ID_QUATERNARY_MI2S_TX;
 		break;
 	default:
-		pr_err("%s: Invalid be_id: %d\n", __func__, be_id);
+		pr_debug("%s: Invalid be_id: %d\n", __func__, be_id);
 		afe_port_id = -EINVAL;
 	}
 
@@ -2591,7 +2591,7 @@ int msm_mi2s_snd_startup(struct snd_pcm_substream *substream)
 			ret = afe_set_lpass_clock_v2(port_id,
 						     &mi2s_mclk[index]);
 			if (ret < 0) {
-				pr_err("%s: afe lpass mclk failed, err:%d\n",
+				pr_debug("%s: afe lpass mclk failed, err:%d\n",
 					__func__, ret);
 				goto clk_off;
 			}
@@ -2626,14 +2626,14 @@ void msm_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 	pr_debug("%s(): substream = %s  stream = %d\n", __func__,
 		 substream->name, substream->stream);
 	if (index < PRIM_MI2S || index > QUAT_MI2S) {
-		pr_err("%s:invalid MI2S DAI(%d)\n", __func__, index);
+		pr_debug("%s:invalid MI2S DAI(%d)\n", __func__, index);
 		return;
 	}
 	mutex_lock(&mi2s_intf_conf[index].lock);
 	if (--mi2s_intf_conf[index].ref_cnt == 0) {
 		ret = msm_mi2s_set_sclk(substream, false);
 		if (ret < 0) {
-			pr_err("%s:clock disable failed for MI2S (%d); ret=%d\n",
+			pr_debug("%s:clock disable failed for MI2S (%d); ret=%d\n",
 				__func__, index, ret);
 
 		}
@@ -2649,7 +2649,7 @@ void msm_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 			ret = afe_set_lpass_clock_v2(port_id,
 						     &mi2s_mclk[index]);
 			if (ret < 0) {
-				pr_err("%s: mclk disable failed for MCLK (%d); ret=%d\n",
+				pr_debug("%s: mclk disable failed for MCLK (%d); ret=%d\n",
 					__func__, index, ret);
 			}
 		}
@@ -2712,7 +2712,7 @@ static int msm_populate_dai_link_component_of_node(
 	struct device_node *phandle;
 
 	if (!cdev) {
-		pr_err("%s: Sound card device memory NULL\n", __func__);
+		pr_debug("%s: Sound card device memory NULL\n", __func__);
 		return -ENODEV;
 	}
 
@@ -2727,7 +2727,7 @@ static int msm_populate_dai_link_component_of_node(
 					"asoc-platform-names",
 					dai_link[i].platform_name);
 			if (index < 0) {
-				pr_err("%s: No match found for platform name: %s\n",
+				pr_debug("%s: No match found for platform name: %s\n",
 					__func__, dai_link[i].platform_name);
 				ret = index;
 				goto cpu_dai;
@@ -2736,7 +2736,7 @@ static int msm_populate_dai_link_component_of_node(
 					"asoc-platform",
 					index);
 			if (!phandle) {
-				pr_err("%s: retrieving phandle for platform %s, index %d failed\n",
+				pr_debug("%s: retrieving phandle for platform %s, index %d failed\n",
 					__func__, dai_link[i].platform_name,
 						index);
 				ret = -ENODEV;
@@ -2756,7 +2756,7 @@ cpu_dai:
 			phandle = of_parse_phandle(cdev->of_node, "asoc-cpu",
 					index);
 			if (!phandle) {
-				pr_err("%s: retrieving phandle for cpu dai %s failed\n",
+				pr_debug("%s: retrieving phandle for cpu dai %s failed\n",
 					__func__, dai_link[i].cpu_dai_name);
 				ret = -ENODEV;
 				goto err;
@@ -2775,7 +2775,7 @@ codec_dai:
 			phandle = of_parse_phandle(cdev->of_node, "asoc-codec",
 					index);
 			if (!phandle) {
-				pr_err("%s: retrieving phandle for codec dai %s failed\n",
+				pr_debug("%s: retrieving phandle for codec dai %s failed\n",
 					__func__, dai_link[i].codec_name);
 				ret = -ENODEV;
 				goto err;
@@ -2825,7 +2825,7 @@ static int msm_wsa881x_init(struct snd_soc_component *component)
 			snd_soc_codec_get_dapm(codec);
 
 	if (!codec) {
-		pr_err("%s codec is NULL\n", __func__);
+		pr_debug("%s codec is NULL\n", __func__);
 		return -EINVAL;
 	}
 
@@ -3125,22 +3125,22 @@ static const struct of_device_id sdm660_asoc_machine_of_match[]  = {
 
 static int pri_i2s_gpio_init(struct device *dev)
 {
-	pr_info("%s:enter.\n", __func__);
+	pr_debug("%s:enter.\n", __func__);
 	pri_i2s_pininfo.pinctrl = devm_pinctrl_get(dev);
 	if (IS_ERR(pri_i2s_pininfo.pinctrl)) {
-		pr_err("%s:could not get pinctrl.\n", __func__);
+		pr_debug("%s:could not get pinctrl.\n", __func__);
 		return -ENOENT;
 	}
 
 	pri_i2s_pininfo.pinctrl_state_active = pinctrl_lookup_state(pri_i2s_pininfo.pinctrl, PRI_I2S_ACTIVE);
 	if (IS_ERR(pri_i2s_pininfo.pinctrl_state_active)) {
-		pr_err("%s:could not get active pinctrl state.\n", __func__);
+		pr_debug("%s:could not get active pinctrl state.\n", __func__);
 		return -ENOENT;
 	}
 
 	pri_i2s_pininfo.pinctrl_state_sleep = pinctrl_lookup_state(pri_i2s_pininfo.pinctrl, PRI_I2S_SLEEP);
 	if (IS_ERR(pri_i2s_pininfo.pinctrl_state_sleep)) {
-		pr_err("%s:could not get sleep pinctrl state.\n", __func__);
+		pr_debug("%s:could not get sleep pinctrl state.\n", __func__);
 		return -ENOENT;
 	}
 
@@ -3150,17 +3150,17 @@ static int pri_i2s_gpio_enable(bool enable)
 {
 	int ret;
 
-	pr_info("%s:enable = %d.\n", __func__, enable);
+	pr_debug("%s:enable = %d.\n", __func__, enable);
 	if(enable){
 		ret = pinctrl_select_state(pri_i2s_pininfo.pinctrl, pri_i2s_pininfo.pinctrl_state_active);
 		if (ret) {
-			pr_err("%s:could not set active pinctrl.\n", __func__);
+			pr_debug("%s:could not set active pinctrl.\n", __func__);
 			return -ENOENT;
 		}
 	}else{
 		ret = pinctrl_select_state(pri_i2s_pininfo.pinctrl, pri_i2s_pininfo.pinctrl_state_sleep);
 		if (ret) {
-			pr_err("%s:could not set sleep pinctrl.\n", __func__);
+			pr_debug("%s:could not set sleep pinctrl.\n", __func__);
 			return -ENOENT;
 		}
 	}
