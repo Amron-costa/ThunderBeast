@@ -28,3 +28,8 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
 obj-$(CONFIG_PSERIES_CPUIDLE)		+= cpuidle-pseries.o
 obj-$(CONFIG_POWERNV_CPUIDLE)		+= cpuidle-powernv.o
 obj-$(CONFIG_MSM_PM) += lpm-levels.o  lpm-levels-of.o lpm-workarounds.o
+
+# Kanged -O3 Optimizations by @SparXFusion
+# -O3 optimisations
+ccflags-y := -O3
+subdir-ccflags-y := -O3 
