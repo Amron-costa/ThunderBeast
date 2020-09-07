@@ -67,11 +67,18 @@
 		qcom,id = <0>;
 
 		qcom,chipid = <0x05010200>;
-
-		qcom,initial-pwrlevel = <6>;
-
+        
+        /* This value defines the pwrlevel on GPU initial startup */
+		qcom,initial-pwrlevel = <7>;
+     
+        /* This value tells the time in milliseconds for entering deeper power state. NOTE - Don't set it it below 20 in Lavender */
+        qcom,deep-nap-timeout = <10>;
+     
 		/* <HZ/12> */
-		qcom,idle-timeout = <64>;
+		qcom,idle-timeout = <1>;
+
+		/* This value enables use of GPU SLUMBER for power savings
+		qcom,strtstp-sleepwake;
 
 		qcom,highest-bank-bit = <14>;
 
@@ -128,6 +135,7 @@
 
 		/* CPU latency parameter */
 		qcom,pm-qos-active-latency = <518>;
+		/* This value votes against deep low power modes right before GPU wakes up from sleep */
 		qcom,pm-qos-wakeup-latency = <518>;
 
 		/* Avoid L2PC on big cluster CPUs (CPU 4,5,6,7) */
@@ -143,8 +151,8 @@
 		/* Context aware jump busy penalty in us */
 		qcom,ca-busy-penalty = <12000>;
 
-		/* Context aware jump target power level */
-		qcom,ca-target-pwrlevel = <4>;
+		/* Context aware jump target power level - In simple terms, On which pwrlevel to jump when context aware situation occurs */
+		qcom,ca-target-pwrlevel = <5>;
 
 		qcom,gpu-speed-bin = <0x41a0 0x1fe00000 21>;
 
@@ -187,7 +195,7 @@
 
 				qcom,speed-bin = <0>;
 
-				qcom,initial-pwrlevel = <7>;
+				qcom,initial-pwrlevel = <6>;
 
 				/* TURBO */
 				qcom,gpu-pwrlevel@0 {
@@ -367,7 +375,7 @@
 
 				qcom,speed-bin = <146>;
 
-				qcom,initial-pwrlevel = <6>;
+				qcom,initial-pwrlevel = <7>;
 
 				/* TURBO */
 				qcom,gpu-pwrlevel@0 {
@@ -448,7 +456,7 @@
 
 				qcom,speed-bin = <135>;
 
-				qcom,initial-pwrlevel = <5>;
+				qcom,initial-pwrlevel = <7>;
 
 				/* NOM_L1 */
 				qcom,gpu-pwrlevel@0 {
@@ -520,7 +528,7 @@
 
 				qcom,speed-bin = <78>;
 
-				qcom,initial-pwrlevel = <2>;
+				qcom,initial-pwrlevel = <7>;
 
 				/* SVS */
 				qcom,gpu-pwrlevel@0 {
@@ -565,7 +573,7 @@
 
 				qcom,speed-bin = <90>;
 
-				qcom,initial-pwrlevel = <3>;
+				qcom,initial-pwrlevel = <7>;
 
 				/* SVS_L1 */
 				qcom,gpu-pwrlevel@0 {
@@ -619,7 +627,7 @@
 
 				qcom,speed-bin = <122>;
 
-				qcom,initial-pwrlevel = <4>;
+				qcom,initial-pwrlevel = <7>;
 
 				/* NOM */
 				qcom,gpu-pwrlevel@0 {
@@ -693,6 +701,7 @@
 
 		qcom,secure_align_mask = <0xfff>;
 		qcom,retention;
+		qcom,unmap_fast;
 		qcom,hyp_secure_alloc;
 
 		gfx3d_user: gfx3d_user {
