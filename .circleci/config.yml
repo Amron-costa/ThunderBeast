@@ -12,7 +12,7 @@ jobs:
            git clone https://github.com/akhilnarang/scripts && cd scripts && bash setup/android_build_env.sh && cd ..
            mkdir stable
            cd stable
-           wget https://raw.githubusercontent.com/Nuub32User/ThunderBeast/stable/.circleci/build.sh
+           wget https://raw.githubusercontent.com/Nuub32User/ThunderBeast/master/.circleci/build.sh
            source build.sh
 workflows:
   version: 2.1
