@@ -148,7 +148,7 @@
  * amount of time to wait for the core to go idle
  */
 
-#define ADRENO_IDLE_TIMEOUT (20 * 1000)
+#define ADRENO_IDLE_TIMEOUT (10 * 1000)
 
 #define ADRENO_UCHE_GMEM_BASE	0x100000
 
